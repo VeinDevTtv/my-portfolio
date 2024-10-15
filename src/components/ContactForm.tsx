@@ -10,16 +10,42 @@ const ContactForm: React.FC = () => {
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const sendDiscordWebhook = async (data: any) => {
+    const webhookUrl = 'https://discord.com/api/webhooks/1295763382758014976/pKxne56zqVpccJ5S-MJFoALpYbO5PT1dgF4Qpq5gNkNV_GKkxgTXHtXDM_fdTJRF6xT2'; // Replace with your actual Discord webhook URL
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: `New contact from portfolio:\nName: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to send Discord webhook');
+      }
+    } catch (error) {
+      console.error('Error sending Discord webhook:', error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Imma add the posibility to send it to a discord webhook to my personal discord
-    console.log('Form submitted:', { name, email, message });
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    // Reset form duh
-    setName('');
-    setEmail('');
-    setMessage('');
+    const formData = { name, email, message };
+    try {
+      await sendDiscordWebhook(formData);
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 3000);
+      // Reset form
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to send message. Please try again.');
+    }
   };
 
   return (
