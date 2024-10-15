@@ -12,11 +12,11 @@ const ContactForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the form data to a server
+    // Imma add the posibility to send it to a discord webhook to my personal discord
     console.log('Form submitted:', { name, email, message });
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
-    // Reset form
+    // Reset form duh
     setName('');
     setEmail('');
     setMessage('');
