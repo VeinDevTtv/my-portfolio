@@ -1,9 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { ChevronDown, Code, Briefcase, Rocket } from 'lucide-react';
+import { ChevronDown, Code, Briefcase, Rocket, ChevronRight, Mail } from 'lucide-react';
 import Skills from './Skills';
 import { useThemeLanguage } from '../ThemeLanguageContext';
 import ThemeLanguageControls from './ThemeLanguageControls';
+import PasswordGenerator from './PasswordGenerator';
+import TicTacToe from './TicTacToe';
+import ContactForm from './ContactForm';
+
 
 const translations = {
   en: {
@@ -46,19 +50,22 @@ const translations = {
     aboutText2: "これまでの最も誇らしい成果は、友人たちと2年間協力して取り組んだゲームサーバープロジェクトです。この取り組みは、多くの新しいスキルを学び、収入を得ただけでなく、一生続く友情を築きました。この経験が、シニアゲーム開発者になり、最終的に自分のゲームエンジンを作成し、会社を立ち上げるという野心を掻き立てました。",
     aboutText3: "現在、「Evolve」と呼ばれる個人プロジェクトにエネルギーを注いでいます。私の最終目標は、人々の生活に深い影響を与えるものを作り出し、ゲーム開発とその他の分野で可能性の境界を押し広げることです。コードを一行書くごとに、問題を一つ解決するごとに、これらの願望を現実にする一歩近づいています。"
   }
-
-
 };
 
 const LandingPage: React.FC = () => {
   const { theme, language } = useThemeLanguage();
   const targetRef = useRef<HTMLDivElement>(null);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [showPasswordGenerator, setShowPasswordGenerator] = useState(false);
+  const [showTicTacToe, setShowTicTacToe] = useState(false);
+  const [showToolsDropdown, setShowToolsDropdown] = useState(false);
+  const [showGamesDropdown, setShowGamesDropdown] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start end", "end start"]
   });
-  
+
   const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
   const y = useTransform(scrollYProgress, [0, 0.5], [100, 0]);
 
@@ -75,6 +82,115 @@ const LandingPage: React.FC = () => {
         style={{ scaleX }}
       />
       <ThemeLanguageControls />
+      
+      {/* Tools Dropdown */}
+      <div className="fixed top-4 left-4 z-50 flex space-x-4">
+        <div className="relative">
+          <button
+            onClick={() => setShowToolsDropdown(!showToolsDropdown)}
+            className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-sky-700 hover:bg-sky-600' : 'bg-sky-200 hover:bg-sky-300'}`}
+          >
+            Tools <ChevronDown className="inline-block ml-1" size={16} />
+          </button>
+          {showToolsDropdown && (
+            <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg ${theme === 'dark' ? 'bg-sky-800' : 'bg-sky-100'}`}>
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setShowPasswordGenerator(true);
+                    setShowToolsDropdown(false);
+                  }}
+                  className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
+                >
+                  Password Generator <ChevronRight className="inline-block float-right" size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Games Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowGamesDropdown(!showGamesDropdown)}
+            className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-sky-700 hover:bg-sky-600' : 'bg-sky-200 hover:bg-sky-300'}`}
+          >
+            Games <ChevronDown className="inline-block ml-1" size={16} />
+          </button>
+          {showGamesDropdown && (
+            <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg ${theme === 'dark' ? 'bg-sky-800' : 'bg-sky-100'}`}>
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setShowTicTacToe(true);
+                    setShowGamesDropdown(false);
+                  }}
+                  className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
+                >
+                  Tic Tac Toe <ChevronRight className="inline-block float-right" size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Password Generator Modal */}
+      {showPasswordGenerator && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-xl w-full">
+            <button
+              onClick={() => setShowPasswordGenerator(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <PasswordGenerator />
+          </div>
+        </div>
+      )}
+
+      {/* Tic Tac Toe Modal */}
+      {showTicTacToe && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-xl w-full">
+            <button
+              onClick={() => setShowTicTacToe(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <TicTacToe />
+          </div>
+        </div>
+      )}
+      {/* Add Contact Form button */}
+      <motion.button
+        onClick={() => setShowContactForm(true)}
+        className={`fixed bottom-4 right-4 px-4 py-2 rounded-full ${
+          theme === 'dark' ? 'bg-sky-600 hover:bg-sky-700' : 'bg-sky-500 hover:bg-sky-600'
+        } text-white shadow-md flex items-center`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <Mail className="mr-2" size={20} /> Contact Me
+      </motion.button>
+
+      {/* Contact Form Modal */}
+      {showContactForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+            <button
+              onClick={() => setShowContactForm(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <ContactForm />
+          </div>
+        </div>
+      )}
+
       <div className="h-screen flex flex-col items-center justify-center relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: -50 }}

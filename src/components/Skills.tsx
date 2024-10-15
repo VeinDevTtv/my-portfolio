@@ -17,6 +17,7 @@ const skills: Skill[] = [
     { name: 'C++', level: 5 },
     { name: 'Lua', level: 100 },
     { name: 'Problem Solving', level: 95 },
+    { name: 'SQL', level: 100 },
   ];
 
 const SkillBar: React.FC<{ skill: Skill }> = ({ skill }) => {
