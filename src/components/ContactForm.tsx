@@ -11,7 +11,7 @@ const ContactForm: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const sendDiscordWebhook = async (data: any) => {
-    const webhookUrl = 'https://discord.com/api/webhooks/1295763382758014976/pKxne56zqVpccJ5S-MJFoALpYbO5PT1dgF4Qpq5gNkNV_GKkxgTXHtXDM_fdTJRF6xT2'; // Replace with your actual Discord webhook URL
+    const webhookUrl = 'https://discord.com/api/webhooks/1295763382758014976/pKxne56zqVpccJ5S-MJFoALpYbO5PT1dgF4Qpq5gNkNV_GKkxgTXHtXDM_fdTJRF6xT2';
     try {
       const response = await fetch(webhookUrl, {
         method: 'POST',
