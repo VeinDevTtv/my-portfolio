@@ -1,15 +1,23 @@
-import React from 'react';
-import { LazyMotion, domAnimation } from 'framer-motion';
+import React, { useEffect } from 'react';
 import LandingPage from './components/LandingPage';
+import { ThemeLanguageProvider, useThemeLanguage } from './ThemeLanguageContext';
+
+const AppContent: React.FC = () => {
+  const { theme } = useThemeLanguage();
+
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
+
+  return <LandingPage />;
+};
 
 const App: React.FC = () => {
   return (
-    <LazyMotion features={domAnimation}>
-      <div className="App">
-        <LandingPage />
-      </div>
-    </LazyMotion>
+    <ThemeLanguageProvider>
+      <AppContent />
+    </ThemeLanguageProvider>
   );
-}
+};
 
 export default App;
