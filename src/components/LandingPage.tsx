@@ -8,7 +8,7 @@ import PasswordGenerator from './PasswordGenerator';
 import TicTacToe from './TicTacToe';
 import ChessGame from './ChessGame';
 import ContactForm from './ContactForm';
-
+import AnimatedCodeBlock from './AnimatedCode';
 
 const translations = {
   en: {
@@ -58,11 +58,12 @@ const LandingPage: React.FC = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [showPasswordGenerator, setShowPasswordGenerator] = useState(false);
-  const [showToolsDropdown, setShowToolsDropdown] = useState(false);
-  const [showGamesDropdown, setShowGamesDropdown] = useState(false);
   const [showTicTacToe, setShowTicTacToe] = useState(false);
   const [showChessGame, setShowChessGame] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showToolsDropdown, setShowToolsDropdown] = useState(false);
+  const [showGamesDropdown, setShowGamesDropdown] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start end", "end start"]
@@ -77,6 +78,43 @@ const LandingPage: React.FC = () => {
     restDelta: 0.001
   });
 
+  const codeSnippet = `
+const drawOrbits = (numSegments) => {
+  onMount(() => {
+    const canvas = Ref.getContext("2d");
+    const angleIncrement = 360 / numSegments;
+    const segmentCount = segments.length;
+    canvas?.clearRect(0, 0, Ref.width, Ref.height);
+    const calculateOrbitRadius = level => level * calculateOrbitSpeed() + numSegments * 3.75;
+
+    const calculateOrbitSpeed = () => {
+      const baseSpeed = (9 - segmentCount) * 7.5;
+      return (segmentCount + 1) * (baseSpeed / segmentCount);
+    };
+
+    const drawOrbits = () => {
+      if (canvas) {
+        segments.forEach((segment, index) => {
+          const orbitRadius = calculateOrbitRadius(index);
+          segment.orbs.forEach(orb => {
+            const renderAngle = orb.renderAngle ?? orb.index * angleIncrement;
+            const x = Ref.width / 2 + orbitRadius * Math.cos(renderAngle * Math.PI / 180);
+            const y = Ref.height / 2 + orbitRadius * Math.sin(renderAngle * Math.PI / 180);
+            canvas.beginPath();
+            canvas.arc(x, y, orb.radius, 0, Math.PI * 2);
+            canvas.fillStyle = orb.color;
+            canvas.fill();
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "rgba(0, 0, 0, 0.05)";
+            canvas.stroke();
+            canvas.closePath();
+          });
+        });
+      }
+    }
+  });
+};`;
+
   return (
     <div ref={targetRef} className={`min-h-[200vh] ${theme === 'dark' ? 'bg-sky-900 text-sky-100' : 'bg-sky-50 text-sky-900'}`}>
       <motion.div
@@ -85,7 +123,7 @@ const LandingPage: React.FC = () => {
       />
       <ThemeLanguageControls />
       
-      {/* Tools Dropdown */}
+      {/* Tools and Games Dropdowns */}
       <div className="fixed top-4 left-4 z-50 flex space-x-4">
         <div className="relative">
           <button
@@ -111,7 +149,6 @@ const LandingPage: React.FC = () => {
           )}
         </div>
 
-        {/* Games Dropdown */}
         <div className="relative">
           <button
             onClick={() => setShowGamesDropdown(!showGamesDropdown)}
@@ -120,104 +157,33 @@ const LandingPage: React.FC = () => {
             Games <ChevronDown className="inline-block ml-1" size={16} />
           </button>
           {showGamesDropdown && (
-          <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg ${theme === 'dark' ? 'bg-sky-800' : 'bg-sky-100'}`}>
-            <div className="py-1">
-              <button
-                onClick={() => {
-                  setShowTicTacToe(true);
-                  setShowGamesDropdown(false);
-                }}
-                className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
-              >
-                Tic Tac Toe <ChevronRight className="inline-block float-right" size={16} />
-              </button>
-              <button
-                onClick={() => {
-                  setShowChessGame(true);
-                  setShowGamesDropdown(false);
-                }}
-                className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
-              >
-                Chess <ChevronRight className="inline-block float-right" size={16} />
-              </button>
+            <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg ${theme === 'dark' ? 'bg-sky-800' : 'bg-sky-100'}`}>
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setShowTicTacToe(true);
+                    setShowGamesDropdown(false);
+                  }}
+                  className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
+                >
+                  Tic Tac Toe <ChevronRight className="inline-block float-right" size={16} />
+                </button>
+                <button
+                  onClick={() => {
+                    setShowChessGame(true);
+                    setShowGamesDropdown(false);
+                  }}
+                  className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
+                >
+                  Chess <ChevronRight className="inline-block float-right" size={16} />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </div>
 
-      {/* Password Generator Modal */}
-      {showPasswordGenerator && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-xl w-full">
-            <button
-              onClick={() => setShowPasswordGenerator(false)}
-              className="float-right text-2xl hover:text-sky-500 transition-colors"
-            >
-              &times;
-            </button>
-            <PasswordGenerator />
-          </div>
-        </div>
-      )}
-
-      {/* Tic Tac Toe Modal */}
-      {showTicTacToe && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-xl w-full">
-            <button
-              onClick={() => setShowTicTacToe(false)}
-              className="float-right text-2xl hover:text-sky-500 transition-colors"
-            >
-              &times;
-            </button>
-            <TicTacToe />
-          </div>
-        </div>
-      )}
-
-      {/* Chess Game Modal */}
-      {showChessGame && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-2xl w-full">
-            <button
-              onClick={() => setShowChessGame(false)}
-              className="float-right text-2xl hover:text-sky-500 transition-colors"
-            >
-              &times;
-            </button>
-            <ChessGame />
-          </div>
-        </div>
-      )}
-
-      {/* Add Contact Form button */}
-      <motion.button
-        onClick={() => setShowContactForm(true)}
-        className={`fixed bottom-4 right-4 px-4 py-2 rounded-full ${
-          theme === 'dark' ? 'bg-sky-600 hover:bg-sky-700' : 'bg-sky-500 hover:bg-sky-600'
-        } text-white shadow-md flex items-center`}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Mail className="mr-2" size={20} /> Contact Me
-      </motion.button>
-
-      {/* Contact Form Modal */}
-      {showContactForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
-            <button
-              onClick={() => setShowContactForm(false)}
-              className="float-right text-2xl hover:text-sky-500 transition-colors"
-            >
-              &times;
-            </button>
-            <ContactForm />
-          </div>
-        </div>
-      )}
-
+      {/* Main Content */}
       <div className="h-screen flex flex-col items-center justify-center relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: -50 }}
@@ -283,6 +249,83 @@ const LandingPage: React.FC = () => {
       </motion.div>
 
       <Skills />
+
+      {/* Code Snippet Section */}
+      <section className="py-16 bg-sky-50 dark:bg-sky-800">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center text-sky-900 dark:text-sky-100">Featured Code from Evolve</h2>
+          <AnimatedCodeBlock code={codeSnippet} language="typescript" />
+        </div>
+      </section>
+
+      {/* Contact Form Button */}
+      <motion.button
+        onClick={() => setShowContactForm(true)}
+        className={`fixed bottom-4 right-4 px-4 py-2 rounded-full ${
+          theme === 'dark' ? 'bg-sky-600 hover:bg-sky-700' : 'bg-sky-500 hover:bg-sky-600'
+        } text-white shadow-md flex items-center`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <Mail className="mr-2" size={20} /> Contact Me
+      </motion.button>
+
+      {/* Modals */}
+      {showPasswordGenerator && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+            <button
+              onClick={() => setShowPasswordGenerator(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <PasswordGenerator />
+          </div>
+        </div>
+      )}
+
+      {showTicTacToe && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+            <button
+              onClick={() => setShowTicTacToe(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <TicTacToe />
+          </div>
+        </div>
+      )}
+
+      {showChessGame && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-2xl w-full">
+            <button
+              onClick={() => setShowChessGame(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <ChessGame />
+          </div>
+        </div>
+      )}
+
+{showContactForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+            <button
+              onClick={() => setShowContactForm(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <ContactForm />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
