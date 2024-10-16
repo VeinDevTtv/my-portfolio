@@ -20,7 +20,7 @@ const EnhancedContactForm: React.FC<ContactFormProps> = ({ onClose }) => {
     setError(null);
 
     try {
-      const response = await fetch('YOUR_DISCORD_WEBHOOK_URL', {
+      const response = await fetch('https://discord.com/api/webhooks/1295763382758014976/pKxne56zqVpccJ5S-MJFoALpYbO5PT1dgF4Qpq5gNkNV_GKkxgTXHtXDM_fdTJRF6xT2', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
