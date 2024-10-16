@@ -9,6 +9,8 @@ import TicTacToe from './TicTacToe';
 import ChessGame from './ChessGame';
 import ContactForm from './ContactForm';
 import AnimatedCodeBlock from './AnimatedCode';
+import InteractiveCodeDemo from './InteractiveCodeDemo';
+
 
 const translations = {
   en: {
@@ -269,6 +271,14 @@ const drawOrbits = (numSegments) => {
       >
         <Mail className="mr-2" size={20} /> Contact Me
       </motion.button>
+
+      {/* Code Snippet Section */}
+      <section className="py-16 bg-sky-50 dark:bg-sky-800">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center text-sky-900 dark:text-sky-100">Interactive Code Demo from Evolve</h2>
+          <InteractiveCodeDemo />
+        </div>
+      </section>
 
       {/* Modals */}
       {showPasswordGenerator && (
