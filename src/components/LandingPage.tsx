@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Code, Briefcase, Rocket, ChevronRight, Mail } from 'lucide-react';
 import Skills from './Skills';
 import { useThemeLanguage } from '../ThemeLanguageContext';
@@ -7,7 +7,7 @@ import ThemeLanguageControls from './ThemeLanguageControls';
 import PasswordGenerator from './PasswordGenerator';
 import TicTacToe from './TicTacToe';
 import ChessGame from './ChessGame';
-import ContactForm from './ContactForm';
+import EnhancedContactForm from './EnhancedContactForm';
 import AnimatedCodeBlock from './AnimatedCode';
 import InteractiveCodeDemo from './InteractiveCodeDemo';
 
@@ -255,7 +255,7 @@ const drawOrbits = (numSegments) => {
       {/* Code Snippet Section */}
       <section className="py-16 bg-sky-50 dark:bg-sky-800">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center text-sky-900 dark:text-sky-100">Featured Code from Evolve</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center text-sky-900 dark:text-sky-100">Sample Code</h2>
           <AnimatedCodeBlock code={codeSnippet} language="typescript" />
         </div>
       </section>
@@ -263,8 +263,8 @@ const drawOrbits = (numSegments) => {
       {/* Contact Form Button */}
       <motion.button
         onClick={() => setShowContactForm(true)}
-        className={`fixed bottom-4 right-4 px-4 py-2 rounded-full ${
-          theme === 'dark' ? 'bg-sky-600 hover:bg-sky-700' : 'bg-sky-500 hover:bg-sky-600'
+        className={`fixed bottom-4 right-4 px-4 py-2 rounded-full z-50 ${
+          theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
         } text-white shadow-md flex items-center`}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -275,7 +275,7 @@ const drawOrbits = (numSegments) => {
       {/* Code Snippet Section */}
       <section className="py-16 bg-sky-50 dark:bg-sky-800">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center text-sky-900 dark:text-sky-100">Interactive Code Demo from Evolve</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center text-sky-900 dark:text-sky-100">Interactive Code Demo</h2>
           <InteractiveCodeDemo />
         </div>
       </section>
@@ -323,19 +323,76 @@ const drawOrbits = (numSegments) => {
         </div>
       )}
 
-{showContactForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
-            <button
-              onClick={() => setShowContactForm(false)}
-              className="float-right text-2xl hover:text-sky-500 transition-colors"
-            >
-              &times;
-            </button>
-            <ContactForm />
-          </div>
-        </div>
-      )}
+    {/* Contact Form Modal */}
+    <AnimatePresence>
+        {showPasswordGenerator && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+              <button
+                onClick={() => setShowPasswordGenerator(false)}
+                className="float-right text-2xl hover:text-sky-500 transition-colors"
+              >
+                &times;
+              </button>
+              <PasswordGenerator />
+            </div>
+          </motion.div>
+        )}
+
+        {showTicTacToe && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+              <button
+                onClick={() => setShowTicTacToe(false)}
+                className="float-right text-2xl hover:text-sky-500 transition-colors"
+              >
+                &times;
+              </button>
+              <TicTacToe />
+            </div>
+          </motion.div>
+        )}
+
+        {showChessGame && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-2xl w-full">
+              <button
+                onClick={() => setShowChessGame(false)}
+                className="float-right text-2xl hover:text-sky-500 transition-colors"
+              >
+                &times;
+              </button>
+              <ChessGame />
+            </div>
+          </motion.div>
+        )}
+
+        {showContactForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <EnhancedContactForm onClose={() => setShowContactForm(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
