@@ -1,7 +1,6 @@
 import React, { useRef, useState, lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Code, Briefcase, Rocket, ChevronRight, Mail } from 'lucide-react';
-import Skills from './Skills';
+import { ChevronDown, Code, Briefcase, Rocket, ChevronRight, Mail, Bot } from 'lucide-react';import Skills from './Skills';
 import { useThemeLanguage } from '../ThemeLanguageContext';
 import ThemeLanguageControls from './ThemeLanguageControls';
 import PasswordGenerator from './PasswordGenerator';
@@ -10,6 +9,7 @@ import ChessGame from './ChessGame';
 import EnhancedContactForm from './EnhancedContactForm';
 import InteractiveCodeDemo from './InteractiveCodeDemo';
 import AIChatbot from './AIChatbot';
+import QRCodeGenerator from './QRCodeGenerator';
 
 const InteractiveResume = lazy(() => import('./InteractiveResume'));
 
@@ -79,6 +79,7 @@ const LandingPage: React.FC = () => {
   const [hackingStage, setHackingStage] = useState(0);
   const [showResume, setShowResume] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+  const [showQRGenerator, setShowQRGenerator] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -144,6 +145,16 @@ const LandingPage: React.FC = () => {
                   className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
                 >
                   Password Generator <ChevronRight className="inline-block float-right" size={16} />
+                </button>
+                {/* Inside the tools dropdown menu */}
+                <button
+                  onClick={() => {
+                    setShowQRGenerator(true);
+                    setShowToolsDropdown(false);
+                  }}
+                  className={`block px-4 py-2 text-sm w-full text-left ${theme === 'dark' ? 'hover:bg-sky-700' : 'hover:bg-sky-200'}`}
+                >
+                  QR Code Generator <ChevronRight className="inline-block float-right" size={16} />
                 </button>
               </div>
             </div>
@@ -267,7 +278,7 @@ const LandingPage: React.FC = () => {
                 : 'bg-green-500 hover:bg-green-400 text-white'
             }`}
           >
-            Hack the Mainframe
+            Know More About Me Differently
           </button>
         ) : (
           <div className="text-center">
@@ -285,6 +296,25 @@ const LandingPage: React.FC = () => {
           </div>
         )}
       </motion.div>
+
+      {showQRGenerator && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        >
+          <div className="bg-white dark:bg-sky-900 p-6 rounded-lg max-w-md w-full">
+            <button
+              onClick={() => setShowQRGenerator(false)}
+              className="float-right text-2xl hover:text-sky-500 transition-colors"
+            >
+              &times;
+            </button>
+            <QRCodeGenerator />
+          </div>
+        </motion.div>
+      )}
 
       {/* Contact Form Button */}
       <motion.button

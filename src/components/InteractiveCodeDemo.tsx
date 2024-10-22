@@ -1,120 +1,173 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useThemeLanguage } from '../ThemeLanguageContext';
 
 const InteractiveCodeDemo: React.FC = () => {
   const { theme } = useThemeLanguage();
-  const [code, setCode] = useState(`
-const drawOrbits = (canvas, numSegments, orbitRadius) => {
-  const ctx = canvas.getContext('2d');
-  const angleIncrement = (2 * Math.PI) / numSegments;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Draw orbit
-  ctx.beginPath();
-  ctx.arc(canvas.width / 2, canvas.height / 2, orbitRadius, 0, 2 * Math.PI);
-  ctx.strokeStyle = '#4299e1';
-  ctx.stroke();
+  const [code, setCode] = useState(`#include <iostream>
+#include <string>
 
-  // Draw segments
-  for (let i = 0; i < numSegments; i++) {
-    const angle = i * angleIncrement;
-    const x = canvas.width / 2 + orbitRadius * Math.cos(angle);
-    const y = canvas.height / 2 + orbitRadius * Math.sin(angle);
+using namespace std;
+
+int main() {
+    string name;
+    int age;
     
-    ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI);
-    ctx.fillStyle = '#ed8936';
-    ctx.fill();
-  }
-};
+    cout << "Enter your name: ";
+    getline(cin, name);
+    
+    cout << "Enter your age: ";
+    cin >> age;
+    
+    cout << "Hello, " << name << "! ";
+    cout << "You are " << age << " years old." << endl;
+    
+    return 0;
+}`);
+  const [output, setOutput] = useState('');
+  const [isRunning, setIsRunning] = useState(false);
+  const [userInput, setUserInput] = useState('');
+  const [waitingForInput, setWaitingForInput] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const outputRef = useRef<HTMLPreElement>(null);
 
-drawOrbits(canvas, numSegments, orbitRadius);
-  `);
-  const [numSegments, setNumSegments] = useState(8);
-  const [orbitRadius, setOrbitRadius] = useState(100);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [error, setError] = useState<string | null>(null);
+  const runCode = async () => {
+    setIsRunning(true);
+    setOutput('');
+    const lines = code.split('\n');
+    const variables: { [key: string]: any } = {};
 
-  const debounce = (func: Function, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
+    for (const line of lines) {
+      await executeLine(line.trim(), variables);
+    }
+
+    setIsRunning(false);
   };
 
-  const updateCanvas = useCallback(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      try {
-        const drawFunction = new Function('canvas', 'numSegments', 'orbitRadius', code);
-        drawFunction(canvas, numSegments, orbitRadius);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+  const executeLine = async (line: string, variables: { [key: string]: any }) => {
+    if (line.startsWith('cout <<')) {
+      await handleOutput(line, variables);
+    } else if (line.startsWith('cin >>') || line.includes('getline(cin,')) {
+      await handleInput(line, variables);
+    } else if (line.includes('=')) {
+      handleAssignment(line, variables);
+    }
+  };
+
+  const handleOutput = async (line: string, variables: { [key: string]: any }) => {
+    const parts = line.split('<<').slice(1);
+    let outputLine = '';
+    for (const part of parts) {
+      const trimmed = part.trim().replace(/;$/, '');
+      if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+        outputLine += trimmed.slice(1, -1);
+      } else if (trimmed === 'endl') {
+        outputLine += '\n';
+      } else {
+        const value = variables[trimmed];
+        outputLine += value !== undefined ? value : trimmed;
       }
     }
-  }, [code, numSegments, orbitRadius]);
+    setOutput(prev => prev + outputLine);
+  };
 
-  const debouncedUpdateCanvas = useCallback(debounce(updateCanvas, 500), [updateCanvas]);
+  const handleInput = async (line: string, variables: { [key: string]: any }) => {
+    setWaitingForInput(true);
+    const input = await new Promise<string>(resolve => {
+      const handleKeyPress = (e: KeyboardEvent) => {
+        if (e.key === 'Enter' && inputRef.current) {
+          resolve(inputRef.current.value);
+          setUserInput('');
+          setWaitingForInput(false);
+          document.removeEventListener('keypress', handleKeyPress);
+        }
+      };
+      document.addEventListener('keypress', handleKeyPress);
+    });
+
+    if (line.startsWith('cin >>')) {
+      const varName = line.split('>>')[1].trim().replace(';', '');
+      variables[varName] = isNaN(Number(input)) ? input : Number(input);
+    } else if (line.includes('getline(cin,')) {
+      const varName = line.match(/getline\(cin,\s*(\w+)\)/)?.[1] || '';
+      variables[varName] = input;
+    }
+    setOutput(prev => prev + input + '\n');
+  };
+
+  const handleAssignment = (line: string, variables: { [key: string]: any }) => {
+    const [left, right] = line.split('=').map(part => part.trim());
+    if (left.includes(' ')) {
+      const [, name] = left.split(' ');
+      variables[name] = right.replace(';', '');
+    } else {
+      variables[left] = right.replace(';', '');
+    }
+  };
 
   useEffect(() => {
-    debouncedUpdateCanvas();
-  }, [code, numSegments, orbitRadius, debouncedUpdateCanvas]);
+    if (waitingForInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [waitingForInput]);
+
+  useEffect(() => {
+    if (outputRef.current) {
+      outputRef.current.scrollTop = outputRef.current.scrollHeight;
+    }
+  }, [output]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      <div className="flex-1">
-        <textarea
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          className={`w-full h-[400px] p-4 font-mono text-sm rounded-lg ${
-            theme === 'dark' ? 'bg-gray-800 text-gray-100' : 'bg-gray-100 text-gray-900'
-          }`}
-        />
-        {error && (
-          <div className="mt-2 text-red-500 text-sm">{error}</div>
-        )}
-      </div>
-      <div className="flex-1 flex flex-col items-center">
-        <canvas 
-          ref={canvasRef} 
-          width={300} 
-          height={300} 
-          className="border border-gray-300 rounded-lg mb-4"
-        />
-        <div className="w-full max-w-xs space-y-4">
-          <div>
-            <label htmlFor="numSegments" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Number of Segments: {numSegments}
-            </label>
-            <input
-              type="range"
-              id="numSegments"
-              min="3"
-              max="20"
-              value={numSegments}
-              onChange={(e) => setNumSegments(Number(e.target.value))}
-              className="w-full"
-            />
-          </div>
-          <div>
-            <label htmlFor="orbitRadius" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Orbit Radius: {orbitRadius}
-            </label>
-            <input
-              type="range"
-              id="orbitRadius"
-              min="50"
-              max="140"
-              value={orbitRadius}
-              onChange={(e) => setOrbitRadius(Number(e.target.value))}
-              className="w-full"
-            />
-          </div>
+    <div className="flex flex-col h-screen">
+      <div className="flex-1 flex">
+        <div className="w-1/2 p-4">
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className={`w-full h-full p-4 font-mono text-sm rounded-lg resize-none ${
+              theme === 'dark' ? 'bg-gray-800 text-gray-100' : 'bg-gray-100 text-gray-900'
+            }`}
+          />
         </div>
+        <div className="w-1/2 p-4 flex flex-col">
+          <pre
+            ref={outputRef}
+            className={`flex-1 p-4 font-mono text-sm rounded-lg overflow-auto ${
+              theme === 'dark' ? 'bg-gray-800 text-gray-100' : 'bg-gray-100 text-gray-900'
+            }`}
+          >
+            {output}
+          </pre>
+          {waitingForInput && (
+            <div className="mt-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                className={`w-full mt-1 p-1 rounded ${
+                  theme === 'dark' ? 'bg-gray-700 text-gray-100' : 'bg-white text-gray-900'
+                }`}
+                placeholder="Enter your input here..."
+              />
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="p-4">
+        <motion.button
+          onClick={runCode}
+          disabled={isRunning}
+          className={`px-4 py-2 rounded ${
+            theme === 'dark'
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-green-500 hover:bg-green-600 text-white'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isRunning ? 'Running...' : 'Run Code'}
+        </motion.button>
       </div>
     </div>
   );
