@@ -16,8 +16,10 @@ const ThemeLanguageControls: React.FC = () => {
       </button>
       <select
         value={language}
-        onChange={(e) => setLanguage(e.target.value as 'en' | 'fr' | 'es' | 'zh' | 'ja')}
-        className={`p-2 rounded ${theme === 'dark' ? 'bg-sky-700 text-sky-200' : 'bg-sky-200 text-sky-800'}`}
+        onChange={(e) => setLanguage(e.target.value as 'en' | 'fr' | 'es' | 'zh' | 'ja' | 'ar')}
+        className={`p-2 rounded ${theme === 'dark' ? 'bg-sky-700 text-sky-200' : 'bg-sky-200 text-sky-800'} ${
+          language === 'ar' ? 'font-arabic' : ''
+        }`}
         aria-label="Select language"
       >
         <option value="en">EN</option>
@@ -25,6 +27,7 @@ const ThemeLanguageControls: React.FC = () => {
         <option value="es">ES</option>
         <option value="zh">中文</option>
         <option value="ja">日本語</option>
+        <option value="ar">العربية</option>
       </select>
     </div>
   );

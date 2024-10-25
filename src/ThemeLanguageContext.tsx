@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 type Theme = 'light' | 'dark';
-type Language = 'en' | 'fr' | 'es' | 'zh' | 'ja';
+type Language = 'en' | 'fr' | 'es' | 'zh' | 'ja' | 'ar';
 
 interface ThemeLanguageContextType {
   theme: Theme;
@@ -22,6 +22,8 @@ export const ThemeLanguageProvider: React.FC<{ children: ReactNode }> = ({ child
 
   const changeLanguage = (lang: Language) => {
     setLanguage(lang);
+    // Add RTL support for Arabic
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   };
 
   useEffect(() => {

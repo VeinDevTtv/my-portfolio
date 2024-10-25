@@ -24,6 +24,16 @@ const translations = {
     viewResume: "View Interactive Resume",
     hideResume: "Hide Resume"
   },
+  ar: {
+    welcome: "مرحباً بكم في ملف أعمالي",
+    name: "أنا عبد الكريم آيت بوريش",
+    aboutMe: "نبذة عني",
+    aboutText1: "كطالب في السنة الأولى في كلية دي أنزا وأطمح للانتقال إلى جامعة كاليفورنيا بيركلي، أنا أخوض رحلة مثيرة في عالم التكنولوجيا وتطوير الألعاب. شغفي بحل المشكلات يدفعني لمواجهة التحديات الصعبة بشكل مباشر، وغالباً ما أعمل بلا كلل ليلاً ونهاراً لإيجاد حلول مبتكرة.",
+    aboutText2: "أفخر إنجازاتي حتى الآن هو مشروع خادم الألعاب الذي تعاونت فيه مع أصدقائي لمدة عامين. هذا المسعى لم يساعدنا فقط في تعلم العديد من المهارات الجديدة وتحقيق بعض الدخل، بل أيضاً كوّن صداقات ستدوم مدى الحياة. هذه التجربة أشعلت طموحي لأصبح مطور ألعاب رئيسياً، وفي النهاية، لإنشاء محرك ألعاب خاص بي وتأسيس شركة.",
+    aboutText3: "حالياً، أركز طاقتي على مشروع شخصي يسمى \"إيفولف\". هدفي النهائي هو إنشاء شيء يؤثر بعمق في حياة الناس، ويدفع حدود الممكن في تطوير الألعاب وما بعده. مع كل سطر من التعليمات البرمجية وكل مشكلة يتم حلها، أقترب خطوة من تحويل هذه الطموحات إلى حقيقة.",
+    viewResume: "عرض السيرة الذاتية التفاعلية",
+    hideResume: "إخفاء السيرة الذاتية"
+  },
   fr: {
     welcome: "Bienvenue dans Mon Portfolio",
     name: "Je suis Abdelkarim Ait Bourich",
@@ -197,24 +207,36 @@ const LandingPage: React.FC = () => {
 
       {/* Main Content */}
       <div className="h-screen flex flex-col items-center justify-center relative overflow-hidden">
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center z-10"
+  <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-center z-11 px-6 py-7" // Added padding
+      >
+        <h1 
+          className={`text-4xl md:text-6xl font-bold mb-8 leading-relaxed bg-clip-text text-transparent ${
+            language === 'ar' ? 'font-arabic' : ''
+          } ${
+            theme === 'dark' 
+              ? 'bg-gradient-to-r from-sky-300 to-sky-500' 
+              : 'bg-gradient-to-r from-sky-500 to-sky-700'
+          }`}
         >
-          <h1 className={`text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent ${theme === 'dark' ? 'bg-gradient-to-r from-sky-300 to-sky-500' : 'bg-gradient-to-r from-sky-500 to-sky-700'}`}>
-            {translations[language].welcome}
-          </h1>
-          <motion.h2 
-            className={`text-2xl md:text-3xl ${theme === 'dark' ? 'text-sky-300' : 'text-sky-700'}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          >
-            {translations[language].name}
-          </motion.h2>
-        </motion.div>
+          {translations[language].welcome}
+        </h1>
+        <motion.h2 
+          className={`text-2xl md:text-3xl leading-relaxed ${
+            language === 'ar' ? 'font-arabic' : ''
+          } ${
+            theme === 'dark' ? 'text-sky-300' : 'text-sky-700'
+          }`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        >
+          {translations[language].name}
+        </motion.h2>
+      </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

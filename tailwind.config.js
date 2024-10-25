@@ -5,6 +5,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        arabic: ['Noto Sans Arabic', 'sans-serif'],
+      },
       colors: {
         blue: colors.blue,
         gray: colors.gray,
