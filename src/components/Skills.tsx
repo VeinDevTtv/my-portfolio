@@ -8,16 +8,17 @@ interface Skill {
 }
 
 const skills: Skill[] = [
-    { name: 'JavaScript', level: 90 },
+    { name: 'JavaScript', level: 85 },
     { name: 'React', level: 85 },
     { name: 'Solid.JS', level: 85 },
     { name: 'Node.js', level: 80 },
     { name: 'CSS/Tailwind', level: 85 },
-    { name: 'Git', level: 80 },
-    { name: 'C++', level: 5 },
+    { name: 'Git', level: 100 },
+    { name: 'C++', level: 20 },
     { name: 'Lua', level: 100 },
     { name: 'Problem Solving', level: 95 },
     { name: 'SQL', level: 100 },
+    { name: 'AI Prompting', level: 100 },
   ];
 
 const SkillBar: React.FC<{ skill: Skill }> = ({ skill }) => {

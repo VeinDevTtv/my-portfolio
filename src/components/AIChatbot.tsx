@@ -31,7 +31,7 @@ const knowledgeBase: KnowledgeItem[] = [
       'programming courses', 'computer studies', 'academics', 'semester',
       'coursework', 'study plan', 'curriculum', 'academic goals', 'transfer plans'
     ],
-    response: "Education Overview:\n\nCurrent: De Anza College\n- Major: Computer Science\n- GPA: 4.0/4.0\n- Location: Cupertino, California\n- Expected Graduation: 2026\n\nTransfer Goals:\n- Target: UC Berkeley\n- Focus: Advanced Computer Science\n\nRelevant Coursework:\n- Data Structures & Algorithms\n- Object-Oriented Programming\n- Web Development\n- Database Management\n\nAcademic Achievements:\n- Perfect GPA Maintenance\n- Active participation in CS projects\n- Continuous learning focus"
+    response: "Education Overview:\n\nCurrent: De Anza College\n- Major: Computer Science\n- GPA: 4.0/4.0\n- Location: Cupertino, California\n- Expected Graduation: 2026\n\nTransfer Goals:\n- Target: UC Santa Cruz\n- Focus: Advanced Computer Science\n\nRelevant Coursework:\n- Data Structures & Algorithms\n- Object-Oriented Programming\n- Web Development\n- Database Management\n\nAcademic Achievements:\n- Perfect GPA Maintenance\n- Active participation in CS projects\n- Continuous learning focus"
   },
   {
     keywords: [
@@ -69,7 +69,7 @@ const knowledgeBase: KnowledgeItem[] = [
       'career goals', 'professional goals', 'future plans', 'direction',
       'achievements', 'targets', 'milestones', 'dreams', 'long-term'
     ],
-    response: "Career Goals & Aspirations:\n\nShort-term Goals:\n- Complete CS degree with excellence\n- Transfer to UC Berkeley\n- Expand game development portfolio\n- Master advanced programming concepts\n\nMid-term Goals:\n- Develop innovative game projects\n- Contribute to open-source\n- Build industry connections\n- Gain professional certifications\n\nLong-term Vision:\n- Create groundbreaking games\n- Found a game development studio\n- Innovate in game technology\n- Mentor future developers"
+    response: "Career Goals & Aspirations:\n\nShort-term Goals:\n- Complete CS degree with excellence\n- Transfer to UC Santa Cruz\n- Expand game development portfolio\n- Master advanced programming concepts\n\nMid-term Goals:\n- Develop innovative game projects\n- Contribute to open-source\n- Build industry connections\n- Gain professional certifications\n\nLong-term Vision:\n- Create groundbreaking games\n- Found a game development studio\n- Innovate in game technology\n- Mentor future developers"
   },
   {
     keywords: [

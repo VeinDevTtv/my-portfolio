@@ -18,7 +18,7 @@ const InteractiveResume: React.FC = () => {
     linkedin: "https://www.linkedin.com/in/abdelkarim-ait-bourich-a7486432b",
     github: "https://github.com/VeinDevTtv",
     education: {
-      school: "De Anza College, willing to transfer to UC Berkeley",
+      school: "De Anza College, willing to transfer to UC Santa Cruz for Game Design",
       major: "Computer Science for Transfer",
       graduation: "Expected Graduation, 2026",
       gpa: "4.00/4.00"
@@ -37,7 +37,7 @@ const InteractiveResume: React.FC = () => {
     projects: [
       {
         name: "Game server Casablanca, Morocco",
-        role: "Founder",
+        role: "Founder & Owner",
         duration: "Jun 2020 - Now",
         description: [
           "Worked on a game server alongside other friends on a 'AAA' game and made mods for other people to join and play in them, in TypeScript, MySQL, Lua, ReactJS.",
